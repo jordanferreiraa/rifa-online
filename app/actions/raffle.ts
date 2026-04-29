@@ -8,7 +8,8 @@ export async function getPurchasedPoints() {
     const points = await prisma.point.findMany({
       select: { number: true },
     });
-    return points.map((p) => p.number);
+    // return points.map((p) => p.number);
+    return points.map((p: { number: number }) => p.number);
   } catch (error) {
     console.error("Error fetching purchased points:", error);
     return [];
