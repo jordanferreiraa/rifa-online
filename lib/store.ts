@@ -9,6 +9,7 @@ interface UserData {
 interface RaffleState {
   userData: UserData | null;
   selectedPoints: number[];
+  purchasedPoints: number[];
   currentStep: number;
   paymentConfirmed: boolean;
 
@@ -18,6 +19,7 @@ interface RaffleState {
   clearSelectedPoints: () => void;
   setCurrentStep: (step: number) => void;
   setPaymentConfirmed: (confirmed: boolean) => void;
+  confirmPayment: () => void;
   reset: () => void;
 }
 
@@ -26,6 +28,7 @@ export const useRaffleStore = create<RaffleState>()(
     (set) => ({
       userData: null,
       selectedPoints: [],
+      purchasedPoints: [],
       currentStep: 1,
       paymentConfirmed: false,
 
@@ -51,10 +54,17 @@ export const useRaffleStore = create<RaffleState>()(
 
       setPaymentConfirmed: (confirmed) => set({ paymentConfirmed: confirmed }),
 
+      confirmPayment: () => 
+        set((state) => ({
+          purchasedPoints: [...new Set([...state.purchasedPoints, ...state.selectedPoints])],
+          paymentConfirmed: true,
+        })),
+
       reset: () =>
         set({
           userData: null,
           selectedPoints: [],
+          purchasedPoints: [],
           currentStep: 1,
           paymentConfirmed: false,
         }),

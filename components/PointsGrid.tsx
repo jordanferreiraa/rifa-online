@@ -5,10 +5,10 @@ import { useRaffleStore } from "@/lib/store";
 import { PointCard } from "./PointCard";
 
 export function PointsGrid() {
-  const { selectedPoints, togglePoint } = useRaffleStore();
+  const { selectedPoints, purchasedPoints, togglePoint } = useRaffleStore();
   
   const points = Array.from({ length: RAFFLE_CONFIG.TOTAL_POINTS }, (_, i) => i + 1);
-  const reserved = new Set(RAFFLE_CONFIG.RESERVED_POINTS);
+  const reserved = new Set([...RAFFLE_CONFIG.RESERVED_POINTS, ...purchasedPoints]);
 
   return (
     <div 

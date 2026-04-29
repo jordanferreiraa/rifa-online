@@ -17,7 +17,7 @@ export const RAFFLE_CONFIG = {
   RAFFLE_PRIZE: "Descrição do prêmio",
 
   // 👇 ALTERE AQUI para marcar pontos já vendidos (simulação inicial)
-  RESERVED_POINTS: [3, 17, 42, 98, 150] as number[],
+  RESERVED_POINTS: [] as number[],
 
   // 👇 Configurações visuais do grid — ajustam automaticamente com TOTAL_POINTS
   GRID_COLUMNS: {

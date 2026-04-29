@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 export default function CheckoutPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(false);
-  const { userData, selectedPoints, setCurrentStep, setPaymentConfirmed } = useRaffleStore();
+  const { userData, selectedPoints, setCurrentStep, confirmPayment } = useRaffleStore();
 
   useEffect(() => {
     if (!userData) {
@@ -33,7 +33,7 @@ export default function CheckoutPage() {
     setIsConfirming(true);
     // Simulating API call
     setTimeout(() => {
-      setPaymentConfirmed(true);
+      confirmPayment();
       router.push("/confirmacao");
     }, 1500);
   };
