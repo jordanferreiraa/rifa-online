@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UserData {
   name: string;
@@ -15,6 +14,7 @@ interface RaffleState {
 
   // Actions
   setUserData: (data: UserData) => void;
+  setPurchasedPoints: (points: number[]) => void;
   togglePoint: (point: number) => void;
   clearSelectedPoints: () => void;
   setCurrentStep: (step: number) => void;
@@ -24,54 +24,50 @@ interface RaffleState {
 }
 
 export const useRaffleStore = create<RaffleState>()(
-  persist(
-    (set) => ({
-      userData: null,
-      selectedPoints: [],
-      purchasedPoints: [],
-      currentStep: 1,
-      paymentConfirmed: false,
+  (set) => ({
+    userData: null,
+    selectedPoints: [],
+    purchasedPoints: [],
+    currentStep: 1,
+    paymentConfirmed: false,
 
-      setUserData: (data) => set({ userData: data }),
-      
-      togglePoint: (point) =>
-        set((state) => {
-          const isSelected = state.selectedPoints.includes(point);
-          if (isSelected) {
-            return {
-              selectedPoints: state.selectedPoints.filter((p) => p !== point),
-            };
-          } else {
-            return {
-              selectedPoints: [...state.selectedPoints, point].sort((a, b) => a - b),
-            };
-          }
-        }),
+    setUserData: (data) => set({ userData: data }),
+    
+    setPurchasedPoints: (points) => set({ purchasedPoints: points }),
+    
+    togglePoint: (point) =>
+      set((state) => {
+        const isSelected = state.selectedPoints.includes(point);
+        if (isSelected) {
+          return {
+            selectedPoints: state.selectedPoints.filter((p) => p !== point),
+          };
+        } else {
+          return {
+            selectedPoints: [...state.selectedPoints, point].sort((a, b) => a - b),
+          };
+        }
+      }),
 
-      clearSelectedPoints: () => set({ selectedPoints: [] }),
-      
-      setCurrentStep: (step) => set({ currentStep: step }),
+    clearSelectedPoints: () => set({ selectedPoints: [] }),
+    
+    setCurrentStep: (step) => set({ currentStep: step }),
 
-      setPaymentConfirmed: (confirmed) => set({ paymentConfirmed: confirmed }),
+    setPaymentConfirmed: (confirmed) => set({ paymentConfirmed: confirmed }),
 
-      confirmPayment: () => 
-        set((state) => ({
-          purchasedPoints: [...new Set([...state.purchasedPoints, ...state.selectedPoints])],
-          paymentConfirmed: true,
-        })),
+    confirmPayment: () => 
+      set((state) => ({
+        purchasedPoints: [...new Set([...state.purchasedPoints, ...state.selectedPoints])],
+        paymentConfirmed: true,
+      })),
 
-      reset: () =>
-        set({
-          userData: null,
-          selectedPoints: [],
-          purchasedPoints: [],
-          currentStep: 1,
-          paymentConfirmed: false,
-        }),
-    }),
-    {
-      name: "rifa-online-storage",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
+    reset: () =>
+      set({
+        userData: null,
+        selectedPoints: [],
+        purchasedPoints: [],
+        currentStep: 1,
+        paymentConfirmed: false,
+      }),
+  })
 );

@@ -11,6 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 
+import { purchasePoints } from "@/app/actions/raffle";
+import { toast } from "sonner";
+
 export default function CheckoutPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(false);
@@ -29,13 +32,23 @@ export default function CheckoutPage() {
 
   const total = selectedPoints.length * RAFFLE_CONFIG.PRICE_PER_POINT;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setIsConfirming(true);
-    // Simulating API call
-    setTimeout(() => {
-      confirmPayment();
-      router.push("/confirmacao");
-    }, 1500);
+    
+    try {
+      const result = await purchasePoints(userData, selectedPoints);
+      
+      if (result.success) {
+        confirmPayment();
+        router.push("/confirmacao");
+      } else {
+        toast.error("Erro ao processar compra: " + (result.error || "Tente novamente."));
+        setIsConfirming(false);
+      }
+    } catch (error) {
+      toast.error("Erro de conexão. Verifique se o banco de dados está configurado.");
+      setIsConfirming(false);
+    }
   };
 
   return (

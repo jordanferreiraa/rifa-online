@@ -6,18 +6,25 @@ import { useRaffleStore } from "@/lib/store";
 import { StepLayout } from "@/components/StepLayout";
 import { PointsGrid } from "@/components/PointsGrid";
 import { StickyCheckoutBar } from "@/components/StickyCheckoutBar";
-import { Badge } from "@/components/ui/badge";
+import { getPurchasedPoints } from "@/app/actions/raffle";
 
 export default function PointsSelectionPage() {
   const router = useRouter();
-  const { userData, setCurrentStep } = useRaffleStore();
+  const { userData, setCurrentStep, setPurchasedPoints } = useRaffleStore();
 
   useEffect(() => {
     if (!userData) {
       router.push("/");
     }
     setCurrentStep(2);
-  }, [userData, router, setCurrentStep]);
+
+    // Fetch purchased points from database
+    const fetchPoints = async () => {
+      const points = await getPurchasedPoints();
+      setPurchasedPoints(points);
+    };
+    fetchPoints();
+  }, [userData, router, setCurrentStep, setPurchasedPoints]);
 
   if (!userData) return null;
 
