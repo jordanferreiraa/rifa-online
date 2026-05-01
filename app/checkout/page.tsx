@@ -103,8 +103,8 @@ export default function CheckoutPage() {
 
         <div className="space-y-6">
           <PixSection />
-          
-          <Button 
+
+          <Button           
             onClick={handleConfirm} 
             disabled={isConfirming}
             className="w-full h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-lg"

@@ -3,12 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { RAFFLE_CONFIG } from "@/lib/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rifa Online",
-  description: "Sistema de rifa virtual completo",
+  title: RAFFLE_CONFIG.RAFFLE_NAME,
+  description: RAFFLE_CONFIG.RAFFLE_PRIZE,
 };
 
 export default function RootLayout({

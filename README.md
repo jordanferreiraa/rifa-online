@@ -24,7 +24,7 @@ export const RAFFLE_CONFIG = {
   TOTAL_POINTS: 200,
 
   // Preço de cada número (em reais)
-  PRICE_PER_POINT: 5.00,
+  PRICE_PER_POINT: 10.00,
 
   // Sua chave PIX para recebimento
   PIX_KEY: "seuemail@exemplo.com",
@@ -34,8 +34,8 @@ export const RAFFLE_CONFIG = {
   WHATSAPP_GROUP_LINK: "https://chat.whatsapp.com/...",
 
   // Nome da rifa e descrição do prêmio
-  RAFFLE_NAME: "Rifa Solidária",
-  RAFFLE_PRIZE: "iPhone 15 Pro Max",
+  RAFFLE_NAME: "Rifa de Dia das Mães",
+  RAFFLE_PRIZE: "Cesta de Cuidado Pessoal e Cosméticos",
 
   // Números que já foram vendidos/reservados (aparecerão desabilitados)
   RESERVED_POINTS: [3, 17, 42, 98, 150],

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, Check, QrCode } from "lucide-react";
+import { Copy, Check, QrCode, User } from "lucide-react";
 import { RAFFLE_CONFIG } from "@/lib/constants";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
@@ -38,7 +38,20 @@ export function PixSection() {
         />
       </div>
 
-      <div className="w-full space-y-3">
+      <div className="w-full space-y-4">
+        <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border flex flex-col items-center gap-1">
+          <div className="flex items-center gap-2 text-primary font-bold">
+            <User className="h-4 w-4" />
+            <span>Titular da Conta</span>
+          </div>
+          <div className="text-sm font-semibold text-center">
+            {RAFFLE_CONFIG.PIX_HOLDER_NAME}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {RAFFLE_CONFIG.PIX_HOLDER_INFO}
+          </div>
+        </div>
+
         <div className="text-center">
           <span className="text-xs font-bold text-muted-foreground uppercase">
             Chave PIX ({RAFFLE_CONFIG.PIX_KEY_TYPE})
