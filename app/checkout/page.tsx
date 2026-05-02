@@ -22,13 +22,13 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!userData) {
       router.push("/");
-    } else if (selectedPoints.length === 0) {
+    } else if (selectedPoints.length === 0 && !isConfirming) {
       router.push("/pontos");
     }
     setCurrentStep(3);
-  }, [userData, selectedPoints, router, setCurrentStep]);
+  }, [userData, selectedPoints, router, setCurrentStep, isConfirming]);
 
-  if (!userData || selectedPoints.length === 0) return null;
+  if (!userData || (selectedPoints.length === 0 && !isConfirming)) return null;
 
   const total = selectedPoints.length * RAFFLE_CONFIG.PRICE_PER_POINT;
 
@@ -39,8 +39,9 @@ export default function CheckoutPage() {
       const result = await purchasePoints(userData, selectedPoints);
       
       if (result.success) {
-        confirmPayment();
+        // Redireciona primeiro, depois limpa o estado
         router.push("/confirmacao");
+        confirmPayment();
       } else {
         toast.error("Erro ao processar compra: " + (result.error || "Tente novamente."));
         setIsConfirming(false);

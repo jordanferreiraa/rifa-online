@@ -33,6 +33,34 @@ export async function getPurchasedPointsWithUsers() {
   }
 }
 
+export async function getPointsByWhatsapp(whatsapp: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { whatsapp },
+      include: {
+        points: {
+          orderBy: {
+            number: "asc",
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return { success: false, error: "Usuário não encontrado." };
+    }
+
+    return { 
+      success: true, 
+      points: user.points.map(p => p.number),
+      userName: user.name 
+    };
+  } catch (error) {
+    console.error("Error fetching points by whatsapp:", error);
+    return { success: false, error: "Erro ao buscar pontos." };
+  }
+}
+
 export async function purchasePoints(userData: { name: string; whatsapp: string }, points: number[]) {
   try {
     // 1. Create or update user

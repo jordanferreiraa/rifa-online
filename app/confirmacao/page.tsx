@@ -8,7 +8,7 @@ import { RAFFLE_CONFIG, RAFFLE_DERIVED } from "@/lib/constants";
 import { SuccessAnimation } from "@/components/SuccessAnimation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MessageCircle, RefreshCw } from "lucide-react";
+import { MessageCircle, RefreshCw, Ticket } from "lucide-react";
 
 export default function ConfirmationPage() {
   const router = useRouter();
@@ -34,6 +34,11 @@ export default function ConfirmationPage() {
     router.push("/pontos");
   };
 
+  const handleViewPoints = () => {
+    clearSelectedPoints();
+    router.push(`/busca?whatsapp=${encodeURIComponent(userData.whatsapp)}`);
+  };
+
   return (
     <StepLayout>
       <div className="max-w-md mx-auto text-center">
@@ -47,7 +52,7 @@ export default function ConfirmationPage() {
         <Card className="mb-8 border-2 border-green-100 dark:border-green-900/30">
           <CardContent className="pt-6 space-y-4">
             <div className="text-sm text-muted-foreground uppercase font-bold tracking-widest">
-              Seus Números
+              Números Comprados Agora
             </div>
             <div className="flex flex-wrap justify-center gap-2">
               {selectedPoints.map((n) => (
@@ -73,6 +78,15 @@ export default function ConfirmationPage() {
           >
             <MessageCircle className="h-6 w-6" />
             Entrar no Grupo de WhatsApp
+          </Button>
+
+          <Button 
+            variant="secondary"
+            className="w-full h-14 font-bold gap-2"
+            onClick={handleViewPoints}
+          >
+            <Ticket className="h-5 w-5" />
+            Ver todos os meus pontos
           </Button>
 
           <Button 
