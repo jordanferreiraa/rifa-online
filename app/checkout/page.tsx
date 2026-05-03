@@ -17,6 +17,7 @@ import { toast } from "sonner";
 export default function CheckoutPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutos em segundos
   const { userData, selectedPoints, setCurrentStep, confirmPayment } = useRaffleStore();
 
   useEffect(() => {
@@ -27,6 +28,15 @@ export default function CheckoutPage() {
     }
     setCurrentStep(3);
   }, [userData, selectedPoints, router, setCurrentStep, isConfirming]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [timeLeft]);
 
   if (!userData || (selectedPoints.length === 0 && !isConfirming)) return null;
 
@@ -105,20 +115,28 @@ export default function CheckoutPage() {
         <div className="space-y-6">
           <PixSection />
 
-          <Button           
-            onClick={handleConfirm} 
-            disabled={isConfirming}
-            className="w-full h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-lg"
-          >
-            {isConfirming ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processando...
-              </>
-            ) : (
-              "Confirmar Pagamento"
+          <div className="space-y-3">
+            <Button           
+              onClick={handleConfirm} 
+              disabled={isConfirming || timeLeft > 0}
+              className="w-full h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-lg disabled:opacity-70"
+            >
+              {isConfirming ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Processando...
+                </>
+              ) : (
+                "Confirmar Pagamento"
+              )}
+            </Button>
+            
+            {timeLeft > 0 && !isConfirming && (
+              <p className="text-center text-sm text-muted-foreground italic animate-pulse">
+                O botão ficará ativo assim que o pagamento for processado...
+              </p>
             )}
-          </Button>
+          </div>
           
           <Button 
             variant="ghost" 
