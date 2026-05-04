@@ -17,7 +17,7 @@ import { toast } from "sonner";
 export default function CheckoutPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutos em segundos
+  const [timeLeft, setTimeLeft] = useState(40); // 1 minuto em segundos
   const { userData, selectedPoints, setCurrentStep, confirmPayment } = useRaffleStore();
 
   useEffect(() => {
