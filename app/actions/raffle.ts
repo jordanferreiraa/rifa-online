@@ -61,7 +61,12 @@ export async function getPointsByWhatsapp(whatsapp: string) {
   }
 }
 
-export async function purchasePoints(userData: { name: string; whatsapp: string }, points: number[]) {
+export async function purchasePoints(
+  userData: { name: string; whatsapp: string }, 
+  points: number[],
+  paymentMethod: string = "PIX",
+  status: string = "PAID"
+) {
   try {
     // 1. Create or update user
     const user = await prisma.user.upsert({
@@ -74,21 +79,21 @@ export async function purchasePoints(userData: { name: string; whatsapp: string 
     });
 
     // 2. Create points
-    // Note: We use createMany for efficiency, but we should handle potential conflicts
-    // Since we added @unique to number, it will fail if any point is already bought
     await prisma.point.createMany({
       data: points.map((n) => ({
         number: n,
         userId: user.id,
+        paymentMethod,
+        status,
       })),
-      skipDuplicates: false, // We want it to fail if someone tries to buy a bought point
+      skipDuplicates: false,
     });
 
     revalidatePath("/");
     revalidatePath("/pontos");
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error purchasing points:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }

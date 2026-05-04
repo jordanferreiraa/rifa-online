@@ -8,7 +8,7 @@ export const RAFFLE_CONFIG = {
   // 👇 ALTERE AQUI com sua chave PIX real
   PIX_KEY: "88998633123",
   PIX_KEY_TYPE: "TELEFONE", // CPF | CNPJ | EMAIL | TELEFONE | ALEATORIA
-  PIX_HOLDER_NAME: "Elias de Lima Coelho",
+  PIX_HOLDER_NAME: "Antonio Elias de Lima Coelho",
   PIX_HOLDER_INFO: "(filho da Selma)",
 
   // 👇 ALTERE AQUI com o link real do grupo
