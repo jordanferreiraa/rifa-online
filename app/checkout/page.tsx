@@ -6,10 +6,11 @@ import { useRaffleStore } from "@/lib/store";
 import { StepLayout } from "@/components/StepLayout";
 import { RAFFLE_CONFIG, RAFFLE_DERIVED } from "@/lib/constants";
 import { PixSection } from "@/components/PixSection";
+import { CashSection } from "@/components/CashSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+import { Banknote, Loader2, QrCode } from "lucide-react";
 
 import { purchasePoints } from "@/app/actions/raffle";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 export default function CheckoutPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"PIX" | "CASH">("PIX");
   const [timeLeft, setTimeLeft] = useState(40); // 1 minuto em segundos
   const { userData, selectedPoints, setCurrentStep, confirmPayment } = useRaffleStore();
 
@@ -46,7 +48,12 @@ export default function CheckoutPage() {
     setIsConfirming(true);
     
     try {
-      const result = await purchasePoints(userData, selectedPoints);
+      const result = await purchasePoints(
+        userData, 
+        selectedPoints, 
+        paymentMethod,
+        paymentMethod === "PIX" ? "PAID" : "PENDING"
+      );
       
       if (result.success) {
         // Redireciona primeiro, depois limpa o estado
@@ -56,7 +63,7 @@ export default function CheckoutPage() {
         toast.error("Erro ao processar compra: " + (result.error || "Tente novamente."));
         setIsConfirming(false);
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro de conexão. Verifique se o banco de dados está configurado.");
       setIsConfirming(false);
     }
@@ -65,7 +72,7 @@ export default function CheckoutPage() {
   return (
     <StepLayout
       title="Resumo e Pagamento"
-      description="Confira os detalhes e realize o pagamento via PIX."
+      description="Escolha a forma de pagamento e finalize seu pedido."
     >
       <div className="grid md:grid-cols-2 gap-8 items-start">
         <Card>
@@ -113,13 +120,40 @@ export default function CheckoutPage() {
         </Card>
 
         <div className="space-y-6">
-          <PixSection />
+          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+            <button
+              onClick={() => setPaymentMethod("PIX")}
+              className={`flex items-center justify-center gap-2 py-2 rounded-md font-medium transition-all ${
+                paymentMethod === "PIX" 
+                  ? "bg-white dark:bg-slate-700 shadow-sm text-primary" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <QrCode className="h-4 w-4" />
+              PIX
+            </button>
+            <button
+              onClick={() => setPaymentMethod("CASH")}
+              className={`flex items-center justify-center gap-2 py-2 rounded-md font-medium transition-all ${
+                paymentMethod === "CASH" 
+                  ? "bg-white dark:bg-slate-700 shadow-sm text-primary" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Banknote className="h-4 w-4" />
+              Dinheiro
+            </button>
+          </div>
+
+          {paymentMethod === "PIX" ? <PixSection /> : <CashSection />}
 
           <div className="space-y-3">
             <Button           
               onClick={handleConfirm} 
-              disabled={isConfirming || timeLeft > 0}
-              className="w-full h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-lg disabled:opacity-70"
+              disabled={isConfirming || (paymentMethod === "PIX" && timeLeft > 0)}
+              className={`w-full h-14 text-white font-bold text-lg disabled:opacity-70 ${
+                paymentMethod === "CASH" ? "bg-primary hover:bg-primary/90" : "bg-green-600 hover:bg-green-700"
+              }`}
             >
               {isConfirming ? (
                 <>
@@ -127,11 +161,11 @@ export default function CheckoutPage() {
                   Processando...
                 </>
               ) : (
-                "Confirmar Pagamento"
+                paymentMethod === "PIX" ? "Confirmar Pagamento PIX" : "Reservar e Pagar em Dinheiro"
               )}
             </Button>
             
-            {timeLeft > 0 && !isConfirming && (
+            {paymentMethod === "PIX" && timeLeft > 0 && !isConfirming && (
               <p className="text-center text-sm text-muted-foreground italic animate-pulse">
                 O botão ficará ativo assim que o pagamento for processado...
               </p>
